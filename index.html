@@ -1,0 +1,2088 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan&amp;Learn</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Poppins:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .heading-font {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .gradient-bg::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: gradientShift 15s ease infinite;
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(30%, -30%) rotate(120deg); }
+      66% { transform: translate(-20%, 20%) rotate(240deg); }
+    }
+    
+    .card-shadow {
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    
+    .card-hover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 50px -12px rgba(102, 126, 234, 0.25), 0 12px 20px -5px rgba(118, 75, 162, 0.15);
+    }
+    
+    .card-hover:hover::before {
+      opacity: 1;
+    }
+    
+    .card-hover:active {
+      transform: translateY(-4px) scale(1.01);
+    }
+    
+    .progress-ring {
+      transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.4));
+    }
+    
+    .ar-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+      }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .slide-up {
+      animation: slideUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    .loading-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 3px solid white;
+      width: 24px;
+      height: 24px;
+      animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .sidebar {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar.hidden {
+        transform: translateX(-100%);
+      }
+    }
+    
+    .icon-float {
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+    
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .glow-effect {
+      position: relative;
+    }
+    
+    .glow-effect::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      filter: blur(20px);
+    }
+    
+    .glow-effect:hover::after {
+      opacity: 0.6;
+    }
+    
+    .shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .shimmer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .scale-in {
+      animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .bounce-in {
+      animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      70% {
+        transform: scale(0.9);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+    
+    button {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    input, select {
+      transition: all 0.3s ease;
+    }
+    
+    input:focus, select:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px -4px rgba(102, 126, 234, 0.2);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto"></div>
+  <script>
+    const PROCEDURES = [
+      {
+        id: 'iv-insertion',
+        name: 'IV Insertion',
+        category: 'Vascular Access',
+        duration: '15-20 min',
+        difficulty: 'Intermediate',
+        icon: '💉',
+        description: 'Learn proper technique for peripheral intravenous catheter insertion, including site selection, vein assessment, and catheter stabilization.',
+        equipment: ['IV Catheter (18-22G)', 'Tourniquet', 'Alcohol Swabs', 'Sterile Gloves', 'Transparent Dressing', 'Tape', 'Sharps Container'],
+        scannerType: 'vascular',
+        steps: [
+          'Gather supplies: IV catheter, tourniquet, alcohol swabs, tape, gloves',
+          'Perform hand hygiene and don gloves',
+          'Apply tourniquet 4-6 inches above insertion site',
+          'Select appropriate vein and clean site with alcohol',
+          'Insert catheter at 15-30 degree angle with bevel up',
+          'Advance catheter while retracting needle',
+          'Release tourniquet and secure catheter',
+          'Dispose of needle in sharps container'
+        ]
+      },
+      {
+        id: 'wound-care',
+        name: 'Wound Care & Dressing',
+        category: 'Wound Management',
+        duration: '10-15 min',
+        difficulty: 'Beginner',
+        icon: '🩹',
+        description: 'Master sterile wound care techniques, including wound assessment, cleaning, and appropriate dressing application.',
+        equipment: ['Sterile Gloves', 'Sterile Gauze', 'Normal Saline', 'Wound Dressing', 'Medical Tape', 'Sterile Scissors', 'Waste Bag'],
+        scannerType: 'wound',
+        steps: [
+          'Perform hand hygiene and prepare sterile field',
+          'Don clean gloves and remove old dressing',
+          'Assess wound for signs of infection or healing',
+          'Clean wound with saline from center outward',
+          'Apply appropriate dressing based on wound type',
+          'Secure dressing with tape or bandage',
+          'Document wound characteristics and care provided',
+          'Dispose of materials and perform hand hygiene'
+        ]
+      },
+      {
+        id: 'ng-tube',
+        name: 'NG Tube Insertion',
+        category: 'Gastrointestinal',
+        duration: '20-25 min',
+        difficulty: 'Advanced',
+        icon: '🔬',
+        description: 'Practice nasogastric tube insertion technique, including proper measurement, insertion, and placement verification.',
+        equipment: ['NG Tube (14-18 Fr)', 'Water-Soluble Lubricant', 'pH Test Strips', 'Stethoscope', 'Tape', 'Gloves', 'Towel', 'Cup of Water'],
+        scannerType: 'gastrointestinal',
+        steps: [
+          'Explain procedure to patient and obtain consent',
+          'Position patient in high Fowler\'s position',
+          'Measure tube from nose to earlobe to xiphoid process',
+          'Lubricate tube tip with water-soluble lubricant',
+          'Insert tube through nostril, aiming downward and backward',
+          'Have patient swallow as tube advances to stomach',
+          'Verify placement with pH testing and auscultation',
+          'Secure tube to nose with tape and document'
+        ]
+      },
+      {
+        id: 'catheter-insertion',
+        name: 'Urinary Catheterization',
+        category: 'Elimination',
+        duration: '15-20 min',
+        difficulty: 'Intermediate',
+        icon: '🏥',
+        description: 'Learn sterile urinary catheter insertion technique for both male and female patients.',
+        equipment: ['Foley Catheter Kit', 'Sterile Gloves', 'Antiseptic Solution', 'Sterile Drapes', 'Lubricant', 'Drainage Bag', 'Sterile Water Syringe'],
+        scannerType: 'urinary',
+        steps: [
+          'Gather sterile catheterization kit and supplies',
+          'Position patient and drape for privacy',
+          'Perform hand hygiene and don sterile gloves',
+          'Clean urethral meatus with antiseptic solution',
+          'Insert lubricated catheter until urine flows',
+          'Inflate balloon with sterile water',
+          'Connect to drainage bag and secure catheter',
+          'Document procedure and initial urine output'
+        ]
+      },
+      {
+        id: 'blood-draw',
+        name: 'Venipuncture',
+        category: 'Laboratory',
+        duration: '10-15 min',
+        difficulty: 'Beginner',
+        icon: '🩸',
+        description: 'Master blood collection technique using the vacutainer system, including proper tube order and labeling.',
+        equipment: ['Vacutainer Needles', 'Blood Collection Tubes', 'Tourniquet', 'Alcohol Swabs', 'Gauze', 'Bandage', 'Gloves', 'Sharps Container'],
+        scannerType: 'laboratory',
+        steps: [
+          'Verify patient identity and orders',
+          'Gather supplies: tourniquet, needles, tubes, alcohol swabs',
+          'Apply tourniquet and select appropriate vein',
+          'Clean site with alcohol in circular motion',
+          'Insert needle at 15-30 degree angle',
+          'Collect blood in appropriate tubes in correct order',
+          'Remove tourniquet and needle, apply pressure',
+          'Label tubes and dispose of sharps properly'
+        ]
+      },
+      {
+        id: 'trach-care',
+        name: 'Tracheostomy Care',
+        category: 'Respiratory',
+        duration: '20-30 min',
+        difficulty: 'Advanced',
+        icon: '🫁',
+        description: 'Practice comprehensive tracheostomy care including suctioning, inner cannula cleaning, and stoma care.',
+        equipment: ['Trach Care Kit', 'Sterile Gloves', 'Sterile Saline', 'Suction Catheter', 'Trach Dressing', 'Trach Ties', 'Hydrogen Peroxide', 'Sterile Basin'],
+        scannerType: 'respiratory',
+        steps: [
+          'Perform hand hygiene and gather sterile supplies',
+          'Suction tracheostomy if needed',
+          'Remove and clean inner cannula with sterile solution',
+          'Clean stoma site with sterile saline',
+          'Apply new tracheostomy dressing',
+          'Change tracheostomy ties if soiled',
+          'Reinsert inner cannula and secure',
+          'Assess respiratory status and document care'
+        ]
+      }
+    ];
+
+    let currentUser = null;
+    let currentView = 'login';
+    let selectedProcedure = null;
+    let allRecords = [];
+    let isLoading = false;
+
+    const defaultConfig = {
+      app_title: 'Scan&Learn',
+      tagline: 'Master clinical skills with confidence',
+      library_title: 'Procedure Library',
+      progress_title: 'Your Progress',
+      login_welcome: 'Welcome Back',
+      login_subtitle: 'Sign in to continue your learning',
+      background_color: '#f8fafc',
+      surface_color: '#ffffff',
+      text_color: '#0f172a',
+      primary_action_color: '#667eea',
+      secondary_action_color: '#764ba2',
+      font_family: 'Inter',
+      font_size: 16
+    };
+
+    const dataHandler = {
+      onDataChanged(data) {
+        allRecords = data;
+        
+        if (currentUser) {
+          renderCurrentView();
+        }
+      }
+    };
+
+    function getUserRecords() {
+      if (!currentUser) return [];
+      return allRecords.filter(r => r.record_type === 'progress' && r.user_id === currentUser.user_id);
+    }
+
+    async function initializeApp() {
+      const initResult = await window.dataSdk.init(dataHandler);
+      if (!initResult.isOk) {
+        console.error('Failed to initialize data SDK');
+      }
+      
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            applyConfig(config);
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => {
+                  config.background_color = value;
+                  window.elementSdk.setConfig({ background_color: value });
+                }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  config.surface_color = value;
+                  window.elementSdk.setConfig({ surface_color: value });
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  config.text_color = value;
+                  window.elementSdk.setConfig({ text_color: value });
+                }
+              },
+              {
+                get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                set: (value) => {
+                  config.primary_action_color = value;
+                  window.elementSdk.setConfig({ primary_action_color: value });
+                }
+              },
+              {
+                get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                set: (value) => {
+                  config.secondary_action_color = value;
+                  window.elementSdk.setConfig({ secondary_action_color: value });
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (value) => {
+                config.font_family = value;
+                window.elementSdk.setConfig({ font_family: value });
+              }
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (value) => {
+                config.font_size = value;
+                window.elementSdk.setConfig({ font_size: value });
+              }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['app_title', config.app_title || defaultConfig.app_title],
+            ['tagline', config.tagline || defaultConfig.tagline],
+            ['library_title', config.library_title || defaultConfig.library_title],
+            ['progress_title', config.progress_title || defaultConfig.progress_title],
+            ['login_welcome', config.login_welcome || defaultConfig.login_welcome],
+            ['login_subtitle', config.login_subtitle || defaultConfig.login_subtitle]
+          ])
+        });
+      }
+      
+      renderLoginView();
+    }
+
+    function applyConfig(config) {
+      const app = document.getElementById('app');
+      const baseSize = config.font_size || defaultConfig.font_size;
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseFontStack = 'system-ui, -apple-system, sans-serif';
+      
+      app.style.backgroundColor = config.background_color || defaultConfig.background_color;
+      app.style.color = config.text_color || defaultConfig.text_color;
+      app.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      app.style.fontSize = `${baseSize}px`;
+      
+      const surfaces = app.querySelectorAll('.surface');
+      surfaces.forEach(surface => {
+        surface.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+      });
+      
+      const titles = app.querySelectorAll('.title');
+      titles.forEach(title => {
+        title.style.fontSize = `${baseSize * 2}px`;
+        title.style.color = config.text_color || defaultConfig.text_color;
+      });
+      
+      const subtitles = app.querySelectorAll('.subtitle');
+      subtitles.forEach(subtitle => {
+        subtitle.style.fontSize = `${baseSize * 1.25}px`;
+        subtitle.style.color = config.text_color || defaultConfig.text_color;
+      });
+      
+      const bodyText = app.querySelectorAll('.body-text');
+      bodyText.forEach(text => {
+        text.style.fontSize = `${baseSize}px`;
+        text.style.color = config.text_color || defaultConfig.text_color;
+      });
+      
+      const smallText = app.querySelectorAll('.small-text');
+      smallText.forEach(text => {
+        text.style.fontSize = `${baseSize * 0.875}px`;
+        text.style.color = config.text_color || defaultConfig.text_color;
+      });
+      
+      const primaryButtons = app.querySelectorAll('.primary-button');
+      primaryButtons.forEach(button => {
+        button.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+        button.style.fontSize = `${baseSize}px`;
+      });
+      
+      const secondaryButtons = app.querySelectorAll('.secondary-button');
+      secondaryButtons.forEach(button => {
+        button.style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+        button.style.fontSize = `${baseSize}px`;
+      });
+      
+      updateEditableText(config);
+    }
+
+    function updateEditableText(config) {
+      const elements = {
+        'app-title': config.app_title || defaultConfig.app_title,
+        'tagline': config.tagline || defaultConfig.tagline,
+        'library-title': config.library_title || defaultConfig.library_title,
+        'progress-title': config.progress_title || defaultConfig.progress_title,
+        'login-welcome': config.login_welcome || defaultConfig.login_welcome,
+        'login-subtitle': config.login_subtitle || defaultConfig.login_subtitle
+      };
+      
+      Object.entries(elements).forEach(([id, text]) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.textContent = text;
+        }
+      });
+    }
+
+    function renderCurrentView() {
+      switch(currentView) {
+        case 'home':
+          renderHomeView();
+          break;
+        case 'progress':
+          renderProgressView();
+          break;
+        case 'settings':
+          showSettings();
+          break;
+        case 'profile':
+          showProfile();
+          break;
+        case 'detail':
+          if (selectedProcedure) {
+            showProcedureDetail(selectedProcedure.id);
+          }
+          break;
+      }
+    }
+
+    function renderLoginView() {
+      currentView = 'login';
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full flex items-center justify-center gradient-bg">
+          <div class="w-full max-w-md px-6 slide-up">
+            <div class="text-center mb-8">
+              <div class="text-7xl mb-4 icon-float">🩺</div>
+              <h1 id="app-title" class="title heading-font text-white font-bold mb-2 fade-in">${config.app_title || defaultConfig.app_title}</h1>
+              <p id="tagline" class="body-text text-white opacity-90 fade-in stagger-1">${config.tagline || defaultConfig.tagline}</p>
+            </div>
+            
+            <div class="surface rounded-3xl p-8 card-shadow mb-4">
+              <h2 id="login-welcome" class="subtitle heading-font font-bold mb-1">${config.login_welcome || defaultConfig.login_welcome}</h2>
+              <p id="login-subtitle" class="small-text opacity-70 mb-6">${config.login_subtitle || defaultConfig.login_subtitle}</p>
+              
+              <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                  <label for="email" class="small-text font-medium block mb-2">Email Address</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    required
+                    placeholder="student@nursing.edu"
+                    class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                    style="border-color: rgba(0,0,0,0.1); outline: none;"
+                  />
+                </div>
+                
+                <div>
+                  <label for="password" class="small-text font-medium block mb-2">Password</label>
+                  <input 
+                    type="password" 
+                    id="password" 
+                    required
+                    placeholder="••••••••"
+                    class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                    style="border-color: rgba(0,0,0,0.1); outline: none;"
+                  />
+                </div>
+                
+                <button 
+                  type="submit" 
+                  class="primary-button w-full py-4 rounded-xl font-semibold text-white card-shadow"
+                  ${isLoading ? 'disabled' : ''}
+                >
+                  ${isLoading ? '<div class="loading-spinner mx-auto"></div>' : '<span class="body-text">Sign In</span>'}
+                </button>
+              </form>
+              
+              <div class="text-center mt-4">
+                <button onclick="handleCreateAccount()" class="small-text font-medium" style="color: #667eea;">
+                  Create New Account
+                </button>
+              </div>
+            </div>
+            
+            <p class="small-text text-white text-center opacity-75">
+              Demo: Use any email to sign in or create account
+            </p>
+          </div>
+        </div>
+      `;
+      
+      applyConfig(config);
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      if (isLoading) return;
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      
+      if (!email || !password) {
+        showToast('Please enter both email and password');
+        return;
+      }
+      
+      isLoading = true;
+      renderLoginView();
+      
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const existingUser = allRecords.find(r => r.record_type === 'user' && r.email === email);
+      
+      if (existingUser) {
+        currentUser = existingUser;
+        isLoading = false;
+        renderHomeView();
+      } else {
+        showToast('Account not found. Please create a new account.');
+        isLoading = false;
+        renderLoginView();
+      }
+    }
+
+    async function handleCreateAccount() {
+      if (allRecords.filter(r => r.record_type === 'user').length >= 999) {
+        showToast('Maximum user limit reached. Please contact administrator.');
+        return;
+      }
+      
+      currentView = 'signup';
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full flex items-center justify-center gradient-bg overflow-auto">
+          <div class="w-full max-w-md px-6 py-8 slide-up">
+            <button onclick="renderLoginView()" class="surface w-12 h-12 rounded-full flex items-center justify-center mb-6 card-shadow">
+              ←
+            </button>
+            
+            <div class="text-center mb-6">
+              <div class="text-6xl mb-3">👩‍⚕️</div>
+              <h1 class="title heading-font text-white font-bold mb-2">Create Account</h1>
+              <p class="body-text text-white opacity-90">Join the nursing skills community</p>
+            </div>
+            
+            <div class="surface rounded-3xl p-8 card-shadow">
+              <form onsubmit="handleSignup(event)" class="space-y-4">
+                <div>
+                  <label for="signup-name" class="small-text font-medium block mb-2">Full Name</label>
+                  <input 
+                    type="text" 
+                    id="signup-name" 
+                    required
+                    placeholder="Sarah Johnson"
+                    class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                    style="border-color: rgba(0,0,0,0.1); outline: none;"
+                  />
+                </div>
+                
+                <div>
+                  <label for="signup-email" class="small-text font-medium block mb-2">Email Address</label>
+                  <input 
+                    type="email" 
+                    id="signup-email" 
+                    required
+                    placeholder="student@nursing.edu"
+                    class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                    style="border-color: rgba(0,0,0,0.1); outline: none;"
+                  />
+                </div>
+                
+                <div>
+                  <label for="signup-role" class="small-text font-medium block mb-2">Role</label>
+                  <select 
+                    id="signup-role" 
+                    required
+                    class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                    style="border-color: rgba(0,0,0,0.1); outline: none;"
+                  >
+                    <option value="">Select your role</option>
+                    <option value="Nursing Student">Nursing Student</option>
+                    <option value="RN">Registered Nurse</option>
+                    <option value="LPN">Licensed Practical Nurse</option>
+                    <option value="Instructor">Nursing Instructor</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="signup-level" class="small-text font-medium block mb-2">Level</label>
+                  <select 
+                    id="signup-level" 
+                    required
+                    class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                    style="border-color: rgba(0,0,0,0.1); outline: none;"
+                  >
+                    <option value="">Select your level</option>
+                    <option value="Year 1">Year 1</option>
+                    <option value="Year 2">Year 2</option>
+                    <option value="Year 3">Year 3</option>
+                    <option value="Year 4">Year 4</option>
+                    <option value="Graduate">Graduate</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="signup-password" class="small-text font-medium block mb-2">Password</label>
+                  <input 
+                    type="password" 
+                    id="signup-password" 
+                    required
+                    placeholder="••••••••"
+                    class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                    style="border-color: rgba(0,0,0,0.1); outline: none;"
+                  />
+                </div>
+                
+                <button 
+                  type="submit" 
+                  class="primary-button w-full py-4 rounded-xl font-semibold text-white card-shadow"
+                  ${isLoading ? 'disabled' : ''}
+                >
+                  ${isLoading ? '<div class="loading-spinner mx-auto"></div>' : '<span class="body-text">Create Account</span>'}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      applyConfig(config);
+    }
+
+    async function handleSignup(event) {
+      event.preventDefault();
+      if (isLoading) return;
+      
+      const name = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const role = document.getElementById('signup-role').value;
+      const level = document.getElementById('signup-level').value;
+      const password = document.getElementById('signup-password').value;
+      
+      if (!name || !email || !role || !level || !password) {
+        showToast('Please fill in all fields');
+        return;
+      }
+      
+      const existingUser = allRecords.find(r => r.record_type === 'user' && r.email === email);
+      if (existingUser) {
+        showToast('An account with this email already exists');
+        return;
+      }
+      
+      isLoading = true;
+      handleCreateAccount();
+      
+      const newUser = {
+        record_type: 'user',
+        user_id: 'user-' + Date.now(),
+        email: email,
+        full_name: name,
+        role: role,
+        level: level,
+        created_at: new Date().toISOString()
+      };
+      
+      const result = await window.dataSdk.create(newUser);
+      
+      if (result.isOk) {
+        currentUser = newUser;
+        isLoading = false;
+        showToast('Account created successfully!');
+        renderHomeView();
+      } else {
+        isLoading = false;
+        showToast('Failed to create account. Please try again.');
+        handleCreateAccount();
+      }
+    }
+
+    function renderHomeView() {
+      currentView = 'home';
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const userProgress = getUserRecords();
+      const completedProcedures = userProgress.filter(p => p.completed).length;
+      const totalProcedures = PROCEDURES.length;
+      const progressPercent = totalProcedures > 0 ? Math.round((completedProcedures / totalProcedures) * 100) : 0;
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full flex">
+          <!-- Sidebar Navigation -->
+          <aside class="sidebar w-64 surface border-r flex-shrink-0 hidden md:flex flex-col" style="border-color: rgba(0,0,0,0.1);">
+            <div class="p-6 border-b" style="border-color: rgba(0,0,0,0.1);">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="text-4xl">🩺</div>
+                <div>
+                  <h2 id="app-title" class="subtitle heading-font font-bold">${config.app_title || defaultConfig.app_title}</h2>
+                </div>
+              </div>
+            </div>
+            
+            <nav class="flex-1 p-4">
+              <button onclick="renderHomeView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 primary-button text-white font-medium">
+                <span class="text-xl">  </span>
+                <span class="body-text">Home</span>
+              </button>
+              <button onclick="renderProgressView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">📊</span>
+                <span class="body-text">Progress</span>
+              </button>
+              <button onclick="showSettings()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">⚙️</span>
+                <span class="body-text">Settings</span>
+              </button>
+            </nav>
+            
+            <div class="p-4 border-t" style="border-color: rgba(0,0,0,0.1);">
+              <button onclick="showProfile()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:opacity-80">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                  👤
+                </div>
+                <div class="flex-1 text-left">
+                  <div class="body-text font-semibold truncate">${currentUser.full_name}</div>
+                  <div class="small-text opacity-70">${currentUser.role}</div>
+                </div>
+              </button>
+            </div>
+          </aside>
+          
+          <!-- Main Content -->
+          <main class="flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="gradient-bg px-6 md:px-8 py-8">
+              <div class="max-w-6xl mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                  <div>
+                    <h1 class="title heading-font text-white font-bold mb-2">Welcome back, ${currentUser.full_name.split(' ')[0]}!</h1>
+                    <p id="tagline" class="body-text text-white opacity-90">${config.tagline || defaultConfig.tagline}</p>
+                  </div>
+                  <button onclick="showProfile()" class="md:hidden surface w-12 h-12 rounded-full flex items-center justify-center text-2xl">
+                    👤
+                  </button>
+                </div>
+                
+                <!-- Progress Card -->
+                <div class="surface rounded-2xl p-6 card-shadow scale-in">
+                  <div class="flex items-center gap-6">
+                    <div class="relative w-24 h-24 flex-shrink-0">
+                      <svg class="transform -rotate-90" width="96" height="96">
+                        <circle cx="48" cy="48" r="40" stroke="rgba(102, 126, 234, 0.2)" stroke-width="8" fill="none"/>
+                        <circle class="progress-ring" cx="48" cy="48" r="40" stroke="url(#gradient)" stroke-width="8" fill="none"
+                          stroke-dasharray="${2 * Math.PI * 40}" 
+                          stroke-dashoffset="${2 * Math.PI * 40 * (1 - progressPercent / 100)}"
+                          stroke-linecap="round"/>
+                        <defs>
+                          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea"/>
+                            <stop offset="100%" style="stop-color:#764ba2"/>
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="subtitle font-bold bounce-in">${progressPercent}%</span>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <h3 class="subtitle font-bold mb-2">Overall Progress</h3>
+                      <p class="body-text opacity-70 mb-3">${completedProcedures} of ${totalProcedures} procedures completed</p>
+                      <div class="grid grid-cols-3 gap-4">
+                        <div>
+                          <div class="small-text opacity-70">Total</div>
+                          <div class="body-text font-bold">${totalProcedures}</div>
+                        </div>
+                        <div>
+                          <div class="small-text opacity-70">Completed</div>
+                          <div class="body-text font-bold">${completedProcedures}</div>
+                        </div>
+                        <div>
+                          <div class="small-text opacity-70">Remaining</div>
+                          <div class="body-text font-bold">${totalProcedures - completedProcedures}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </header>
+            
+            <!-- Procedure Library -->
+            <section class="px-6 md:px-8 py-8">
+              <div class="max-w-6xl mx-auto">
+                <h2 id="library-title" class="subtitle heading-font font-bold mb-6">${config.library_title || defaultConfig.library_title}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  ${PROCEDURES.map((proc, index) => {
+                    const isCompleted = userProgress.some(p => p.procedure_id === proc.id && p.completed);
+                    return `
+                      <div class="surface rounded-2xl p-6 card-shadow card-hover glow-effect cursor-pointer fade-in stagger-${(index % 6) + 1}" onclick="showProcedureDetail('${proc.id}')">
+                        <div class="flex items-start justify-between mb-4">
+                          <div class="text-5xl icon-float" style="animation-delay: ${index * 0.2}s;">${proc.icon}</div>
+                          ${isCompleted ? '<span class="text-2xl bounce-in">✓</span>' : ''}
+                        </div>
+                        <h3 class="subtitle font-bold mb-2">${proc.name}</h3>
+                        <p class="small-text opacity-70 mb-4">${proc.category}</p>
+                        <div class="flex gap-2 flex-wrap">
+                          <span class="small-text px-3 py-1 rounded-full shimmer" style="background: rgba(102, 126, 234, 0.1);">⏱️ ${proc.duration}</span>
+                          <span class="small-text px-3 py-1 rounded-full" style="background: ${proc.difficulty === 'Beginner' ? 'rgba(34, 197, 94, 0.1)' : proc.difficulty === 'Intermediate' ? 'rgba(251, 146, 60, 0.1)' : 'rgba(239, 68, 68, 0.1)'};">${proc.difficulty}</span>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </section>
+          </main>
+        </div>
+      `;
+      
+      applyConfig(config);
+    }
+
+    function showProcedureDetail(procedureId) {
+      selectedProcedure = PROCEDURES.find(p => p.id === procedureId);
+      if (!selectedProcedure) return;
+      
+      currentView = 'detail';
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const userProgress = getUserRecords();
+      const userProcProgress = userProgress.find(p => p.procedure_id === procedureId);
+      const isCompleted = userProcProgress?.completed || false;
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full flex">
+          <!-- Sidebar Navigation -->
+          <aside class="sidebar w-64 surface border-r flex-shrink-0 hidden md:flex flex-col" style="border-color: rgba(0,0,0,0.1);">
+            <div class="p-6 border-b" style="border-color: rgba(0,0,0,0.1);">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="text-4xl">🩺</div>
+                <div>
+                  <h2 id="app-title" class="subtitle heading-font font-bold">${config.app_title || defaultConfig.app_title}</h2>
+                </div>
+              </div>
+            </div>
+            
+            <nav class="flex-1 p-4">
+              <button onclick="renderHomeView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">🏠</span>
+                <span class="body-text">Home</span>
+              </button>
+              <button onclick="renderProgressView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">📊</span>
+                <span class="body-text">Progress</span>
+              </button>
+              <button onclick="showSettings()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">⚙️</span>
+                <span class="body-text">Settings</span>
+              </button>
+            </nav>
+            
+            <div class="p-4 border-t" style="border-color: rgba(0,0,0,0.1);">
+              <button onclick="showProfile()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:opacity-80">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                  👤
+                </div>
+                <div class="flex-1 text-left">
+                  <div class="body-text font-semibold truncate">${currentUser.full_name}</div>
+                  <div class="small-text opacity-70">${currentUser.role}</div>
+                </div>
+              </button>
+            </div>
+          </aside>
+          
+          <!-- Main Content -->
+          <main class="flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="gradient-bg px-6 md:px-8 py-8">
+              <div class="max-w-4xl mx-auto">
+                <button onclick="renderHomeView()" class="surface w-12 h-12 rounded-full flex items-center justify-center mb-6 card-shadow">
+                  ←
+                </button>
+                <div class="text-7xl mb-6">${selectedProcedure.icon}</div>
+                <h1 class="title heading-font text-white font-bold mb-3">${selectedProcedure.name}</h1>
+                <p class="body-text text-white opacity-90 mb-4">${selectedProcedure.category}</p>
+                <div class="flex gap-3">
+                  <span class="body-text px-4 py-2 rounded-full text-white" style="background: rgba(255, 255, 255, 0.2);">⏱️ ${selectedProcedure.duration}</span>
+                  <span class="body-text px-4 py-2 rounded-full text-white" style="background: rgba(255, 255, 255, 0.2);">${selectedProcedure.difficulty}</span>
+                </div>
+              </div>
+            </header>
+            
+            <!-- Content -->
+            <section class="px-6 md:px-8 py-8">
+              <div class="max-w-4xl mx-auto space-y-8">
+                ${isCompleted ? `
+                  <div class="surface rounded-2xl p-6 card-shadow" style="background: rgba(34, 197, 94, 0.1); border: 2px solid rgba(34, 197, 94, 0.3);">
+                    <div class="flex items-center gap-4">
+                      <span class="text-4xl">✓</span>
+                      <div>
+                        <div class="subtitle font-bold" style="color: rgb(22, 163, 74);">Completed</div>
+                        <div class="body-text" style="color: rgb(22, 163, 74);">Great job! You've mastered this procedure.</div>
+                      </div>
+                    </div>
+                  </div>
+                ` : ''}
+                
+                <!-- Description -->
+                <div>
+                  <h2 class="subtitle heading-font font-bold mb-4">About This Procedure</h2>
+                  <div class="surface rounded-2xl p-6 card-shadow">
+                    <p class="body-text">${selectedProcedure.description}</p>
+                  </div>
+                </div>
+                
+                <!-- Two Column Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <!-- Steps -->
+                  <div>
+                    <h2 class="subtitle heading-font font-bold mb-4">Step-by-Step Instructions</h2>
+                    <div class="space-y-3">
+                      ${selectedProcedure.steps.map((step, index) => `
+                        <div class="surface rounded-xl p-4 card-shadow">
+                          <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                              ${index + 1}
+                            </div>
+                            <p class="body-text flex-1">${step}</p>
+                          </div>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                  
+                  <!-- Equipment -->
+                  <div>
+                    <h2 class="subtitle heading-font font-bold mb-4">Required Equipment</h2>
+                    <div class="surface rounded-2xl p-6 card-shadow">
+                      <div class="space-y-3">
+                        ${selectedProcedure.equipment.map(item => `
+                          <div class="flex items-center gap-3 py-2">
+                            <span class="text-xl">✓</span>
+                            <span class="body-text">${item}</span>
+                          </div>
+                        `).join('')}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button onclick="startEquipmentScanner('${selectedProcedure.id}')" class="secondary-button py-4 rounded-xl font-semibold text-white flex items-center justify-center gap-3 card-shadow">
+                    <span class="text-2xl">📷</span>
+                    <span class="body-text">Scan Equipment</span>
+                  </button>
+                  
+                  <button onclick="startARPractice('${selectedProcedure.id}')" class="primary-button py-4 rounded-xl font-semibold text-white flex items-center justify-center gap-3 card-shadow" ${isLoading ? 'disabled' : ''}>
+                    ${isLoading ? '<div class="loading-spinner"></div>' : '<span class="text-2xl">🥽</span>'}
+                    <span class="body-text">${isLoading ? 'Starting...' : 'Start AR Practice'}</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+          </main>
+        </div>
+      `;
+      
+      applyConfig(config);
+    }
+
+    async function startEquipmentScanner(procedureId) {
+      const procedure = PROCEDURES.find(p => p.id === procedureId);
+      currentView = 'scanner';
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      const scannerColors = {
+        'vascular': '#ef4444',
+        'wound': '#f59e0b',
+        'gastrointestinal': '#8b5cf6',
+        'urinary': '#06b6d4',
+        'laboratory': '#dc2626',
+        'respiratory': '#10b981'
+      };
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full relative" style="background: #000000;">
+          <!-- Live Camera Feed -->
+          <video id="camera-feed" autoplay playsinline class="absolute inset-0 w-full h-full object-cover"></video>
+          
+          <!-- Camera Overlay -->
+          <div class="absolute inset-0 pointer-events-none">
+            <!-- Scanning Frame -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="relative w-80 h-80" style="border: 3px solid ${scannerColors[procedure.scannerType]}; border-radius: 16px; box-shadow: 0 0 40px ${scannerColors[procedure.scannerType]}80;">
+                <div class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4" style="border-color: ${scannerColors[procedure.scannerType]};"></div>
+                <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4" style="border-color: ${scannerColors[procedure.scannerType]};"></div>
+                <div class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4" style="border-color: ${scannerColors[procedure.scannerType]};"></div>
+                <div class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4" style="border-color: ${scannerColors[procedure.scannerType]};"></div>
+                
+                <!-- Scanning Line Animation -->
+                <div id="scan-line" class="absolute left-0 right-0 h-1" style="background: ${scannerColors[procedure.scannerType]}; box-shadow: 0 0 20px ${scannerColors[procedure.scannerType]}; top: 0; animation: scanLine 2s linear infinite;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Scanner Header -->
+          <div class="absolute top-8 left-8 right-8 z-10 pointer-events-auto">
+            <div class="flex justify-between items-center max-w-4xl mx-auto">
+              <button onclick="stopCamera(); showProcedureDetail('${procedureId}')" class="surface w-14 h-14 rounded-full flex items-center justify-center card-shadow text-xl">
+                ✕
+              </button>
+              <div class="surface px-6 py-3 rounded-full card-shadow">
+                <span class="body-text font-semibold">📷 Scanning Equipment</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Scanning Status -->
+          <div class="absolute top-32 left-8 right-8 z-10 pointer-events-none">
+            <div class="surface rounded-2xl p-6 card-shadow max-w-md mx-auto text-center scale-in shimmer">
+              <div class="flex gap-2 justify-center mb-3">
+                <div class="w-3 h-3 rounded-full ar-pulse" style="background: ${scannerColors[procedure.scannerType]};"></div>
+                <div class="w-3 h-3 rounded-full ar-pulse" style="background: ${scannerColors[procedure.scannerType]}; animation-delay: 0.2s;"></div>
+                <div class="w-3 h-3 rounded-full ar-pulse" style="background: ${scannerColors[procedure.scannerType]}; animation-delay: 0.4s;"></div>
+              </div>
+              <p class="body-text font-semibold fade-in">Point camera at equipment</p>
+              <p class="small-text opacity-70 fade-in stagger-1">AI will identify items automatically</p>
+            </div>
+          </div>
+          
+          <!-- Equipment Checklist -->
+          <div class="absolute bottom-8 left-8 right-8 z-10 pointer-events-auto">
+            <div class="surface rounded-2xl p-6 card-shadow max-w-2xl mx-auto">
+              <h3 class="subtitle font-semibold mb-4">Equipment Checklist</h3>
+              <div id="equipment-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6 max-h-48 overflow-y-auto">
+                ${procedure.equipment.map((item, index) => `
+                  <div id="equipment-${index}" class="flex items-center gap-3 py-2">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center text-sm" style="background: rgba(156, 163, 175, 0.2); color: rgb(107, 114, 128);">
+                      ○
+                    </div>
+                    <span class="body-text opacity-70">${item}</span>
+                  </div>
+                `).join('')}
+              </div>
+              <button onclick="stopCamera(); showProcedureDetail('${procedureId}')" class="primary-button w-full py-4 rounded-xl font-semibold text-white">
+                Done Scanning
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <style>
+          @keyframes scanLine {
+            0% { top: 0; }
+            100% { top: 100%; }
+          }
+        </style>
+      `;
+      
+      applyConfig(config);
+      
+      // Start camera
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: 'environment' } 
+        });
+        const videoElement = document.getElementById('camera-feed');
+        if (videoElement) {
+          videoElement.srcObject = stream;
+          window.currentCameraStream = stream;
+          
+          // Simulate equipment detection
+          simulateEquipmentDetection(procedure.equipment);
+        }
+      } catch (error) {
+        showToast('Camera access denied. Please enable camera permissions.');
+        showProcedureDetail(procedureId);
+      }
+    }
+    
+    function simulateEquipmentDetection(equipment) {
+      let detectedCount = 0;
+      const detectionInterval = setInterval(() => {
+        if (detectedCount >= equipment.length || currentView !== 'scanner') {
+          clearInterval(detectionInterval);
+          return;
+        }
+        
+        const equipmentElement = document.getElementById(`equipment-${detectedCount}`);
+        if (equipmentElement) {
+          equipmentElement.innerHTML = `
+            <div class="w-6 h-6 rounded-full flex items-center justify-center text-sm" style="background: rgba(34, 197, 94, 0.2); color: rgb(22, 163, 74);">
+              ✓
+            </div>
+            <span class="body-text font-medium">${equipment[detectedCount]}</span>
+          `;
+          
+          // Play detection sound effect (visual feedback)
+          equipmentElement.style.animation = 'pulse 0.5s ease';
+          
+          showToast(`✓ Detected: ${equipment[detectedCount]}`);
+        }
+        
+        detectedCount++;
+      }, 2000);
+    }
+    
+    function stopCamera() {
+      if (window.currentCameraStream) {
+        window.currentCameraStream.getTracks().forEach(track => track.stop());
+        window.currentCameraStream = null;
+      }
+    }
+
+    async function startARPractice(procedureId) {
+      if (isLoading) return;
+      
+      isLoading = true;
+      showProcedureDetail(procedureId);
+      
+      setTimeout(() => {
+        isLoading = false;
+        showARSession(procedureId);
+      }, 1500);
+    }
+
+    function showARSession(procedureId) {
+      const procedure = PROCEDURES.find(p => p.id === procedureId);
+      currentView = 'ar';
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full relative" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
+          <!-- AR Camera View Simulation -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-9xl mb-8 ar-pulse">${procedure.icon}</div>
+              <div class="surface rounded-2xl p-8 mx-6 card-shadow max-w-md">
+                <h2 class="subtitle font-bold mb-3">AR Practice Mode</h2>
+                <p class="body-text opacity-70 mb-4">Point your device at a flat surface to begin</p>
+                <div class="flex gap-2 justify-center">
+                  <div class="w-3 h-3 rounded-full ar-pulse" style="background: #667eea;"></div>
+                  <div class="w-3 h-3 rounded-full ar-pulse" style="background: #667eea; animation-delay: 0.2s;"></div>
+                  <div class="w-3 h-3 rounded-full ar-pulse" style="background: #667eea; animation-delay: 0.4s;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- AR Controls Overlay -->
+          <div class="absolute top-8 left-8 right-8">
+            <div class="flex justify-between items-center max-w-4xl mx-auto">
+              <button onclick="showProcedureDetail('${procedureId}')" class="surface w-14 h-14 rounded-full flex items-center justify-center card-shadow text-xl">
+                ✕
+              </button>
+              <div class="surface px-6 py-3 rounded-full card-shadow">
+                <span class="body-text font-semibold">${procedure.name}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- AR Step Indicator -->
+          <div class="absolute bottom-32 left-8 right-8">
+            <div class="surface rounded-2xl p-8 card-shadow max-w-3xl mx-auto">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                  1
+                </div>
+                <span class="subtitle font-semibold">Current Step</span>
+              </div>
+              <p class="body-text mb-6">${procedure.steps[0]}</p>
+              <div class="flex gap-4">
+                <button class="secondary-button flex-1 py-4 rounded-xl font-semibold text-white">
+                  Previous
+                </button>
+                <button class="primary-button flex-1 py-4 rounded-xl font-semibold text-white">
+                  Next Step
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Complete Session Button -->
+          <div class="absolute bottom-8 left-8 right-8">
+            <div class="max-w-3xl mx-auto">
+              <button onclick="completeARSession('${procedureId}')" class="w-full py-4 rounded-xl font-semibold text-white card-shadow" style="background: rgba(34, 197, 94, 0.9);" ${isLoading ? 'disabled' : ''}>
+                ${isLoading ? '<div class="loading-spinner mx-auto"></div>' : '<span class="body-text">✓ Complete Practice Session</span>'}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      applyConfig(config);
+    }
+
+    async function completeARSession(procedureId) {
+      if (isLoading) return;
+      
+      const totalRecords = allRecords.length;
+      if (totalRecords >= 999) {
+        showToast('Maximum limit of 999 records reached. Please contact your administrator.');
+        return;
+      }
+      
+      isLoading = true;
+      showARSession(procedureId);
+      
+      const userProgress = getUserRecords();
+      const existingProgress = userProgress.find(p => p.procedure_id === procedureId);
+      
+      if (existingProgress) {
+        existingProgress.completed = true;
+        existingProgress.completion_date = new Date().toISOString();
+        existingProgress.practice_time_minutes = 15;
+        existingProgress.confidence_level = 4;
+        
+        const result = await window.dataSdk.update(existingProgress);
+        if (result.isOk) {
+          isLoading = false;
+          showCompletionScreen(procedureId);
+        } else {
+          isLoading = false;
+          showToast('Failed to save progress. Please try again.');
+          showARSession(procedureId);
+        }
+      } else {
+        const newProgress = {
+          record_type: 'progress',
+          user_id: currentUser.user_id,
+          procedure_id: procedureId,
+          completed: true,
+          completion_date: new Date().toISOString(),
+          practice_time_minutes: 15,
+          confidence_level: 4
+        };
+        
+        const result = await window.dataSdk.create(newProgress);
+        if (result.isOk) {
+          isLoading = false;
+          showCompletionScreen(procedureId);
+        } else {
+          isLoading = false;
+          showToast('Failed to save progress. Please try again.');
+          showARSession(procedureId);
+        }
+      }
+    }
+
+    function showCompletionScreen(procedureId) {
+      const procedure = PROCEDURES.find(p => p.id === procedureId);
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full flex items-center justify-center px-6 gradient-bg">
+          <div class="text-center max-w-2xl">
+            <div class="text-9xl mb-8 bounce-in icon-float">🎉</div>
+            <h1 class="title heading-font text-white font-bold mb-4 fade-in stagger-1">Excellent Work!</h1>
+            <p class="body-text text-white opacity-90 mb-8 fade-in stagger-2">You've completed the ${procedure.name} practice session</p>
+            
+            <div class="surface rounded-2xl p-8 mb-8 card-shadow scale-in stagger-3">
+              <div class="grid grid-cols-2 gap-8">
+                <div class="fade-in stagger-4">
+                  <div class="small-text opacity-70 mb-2">Practice Time</div>
+                  <div class="subtitle font-bold">15 min</div>
+                </div>
+                <div class="fade-in stagger-5">
+                  <div class="small-text opacity-70 mb-2">Confidence</div>
+                  <div class="subtitle font-bold">⭐⭐⭐⭐</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button onclick="renderHomeView()" class="primary-button py-4 rounded-xl font-semibold text-white card-shadow glow-effect fade-in stagger-6">
+                <span class="body-text">Return to Home</span>
+              </button>
+              <button onclick="showProcedureDetail('${procedureId}')" class="py-4 rounded-xl font-semibold fade-in stagger-6" style="background: rgba(255, 255, 255, 0.2); color: white;">
+                <span class="body-text">Practice Again</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      applyConfig(config);
+    }
+
+    function renderProgressView() {
+      currentView = 'progress';
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const userProgress = getUserRecords();
+      const completedProcedures = userProgress.filter(p => p.completed);
+      const totalProcedures = PROCEDURES.length;
+      const progressPercent = totalProcedures > 0 ? Math.round((completedProcedures.length / totalProcedures) * 100) : 0;
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full flex">
+          <!-- Sidebar Navigation -->
+          <aside class="sidebar w-64 surface border-r flex-shrink-0 hidden md:flex flex-col" style="border-color: rgba(0,0,0,0.1);">
+            <div class="p-6 border-b" style="border-color: rgba(0,0,0,0.1);">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="text-4xl">🩺</div>
+                <div>
+                  <h2 id="app-title" class="subtitle heading-font font-bold">${config.app_title || defaultConfig.app_title}</h2>
+                </div>
+              </div>
+            </div>
+            
+            <nav class="flex-1 p-4">
+              <button onclick="renderHomeView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">🏠</span>
+                <span class="body-text">Home</span>
+              </button>
+              <button onclick="renderProgressView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 primary-button text-white font-medium">
+                <span class="text-xl">📊</span>
+                <span class="body-text">Progress</span>
+              </button>
+              <button onclick="showSettings()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">⚙️</span>
+                <span class="body-text">Settings</span>
+              </button>
+            </nav>
+            
+            <div class="p-4 border-t" style="border-color: rgba(0,0,0,0.1);">
+              <button onclick="showProfile()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:opacity-80">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                  👤
+                </div>
+                <div class="flex-1 text-left">
+                  <div class="body-text font-semibold truncate">${currentUser.full_name}</div>
+                  <div class="small-text opacity-70">${currentUser.role}</div>
+                </div>
+              </button>
+            </div>
+          </aside>
+          
+          <!-- Main Content -->
+          <main class="flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="gradient-bg px-6 md:px-8 py-8">
+              <div class="max-w-6xl mx-auto">
+                <h1 id="progress-title" class="title heading-font text-white font-bold mb-2">${config.progress_title || defaultConfig.progress_title}</h1>
+                <p class="body-text text-white opacity-90">Track your learning journey</p>
+              </div>
+            </header>
+            
+            <!-- Content -->
+            <section class="px-6 md:px-8 py-8">
+              <div class="max-w-6xl mx-auto">
+                <!-- Overall Progress Card -->
+                <div class="surface rounded-2xl p-8 card-shadow mb-8">
+                  <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="relative w-40 h-40 flex-shrink-0">
+                      <svg class="transform -rotate-90" width="160" height="160">
+                        <circle cx="80" cy="80" r="70" stroke="rgba(102, 126, 234, 0.2)" stroke-width="12" fill="none"/>
+                        <circle class="progress-ring" cx="80" cy="80" r="70" stroke="url(#gradient)" stroke-width="12" fill="none"
+                          stroke-dasharray="${2 * Math.PI * 70}" 
+                          stroke-dashoffset="${2 * Math.PI * 70 * (1 - progressPercent / 100)}"
+                          stroke-linecap="round"/>
+                        <defs>
+                          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea"/>
+                            <stop offset="100%" style="stop-color:#764ba2"/>
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="title font-bold">${progressPercent}%</span>
+                      </div>
+                    </div>
+                    <div class="flex-1 text-center md:text-left">
+                      <h3 class="subtitle font-bold mb-3">Overall Completion</h3>
+                      <p class="body-text opacity-70 mb-6">${completedProcedures.length} of ${totalProcedures} procedures completed</p>
+                      <div class="grid grid-cols-3 gap-6">
+                        <div>
+                          <div class="small-text opacity-70 mb-1">Total</div>
+                          <div class="subtitle font-bold">${totalProcedures}</div>
+                        </div>
+                        <div>
+                          <div class="small-text opacity-70 mb-1">Completed</div>
+                          <div class="subtitle font-bold">${completedProcedures.length}</div>
+                        </div>
+                        <div>
+                          <div class="small-text opacity-70 mb-1">Remaining</div>
+                          <div class="subtitle font-bold">${totalProcedures - completedProcedures.length}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Completed Procedures -->
+                ${completedProcedures.length > 0 ? `
+                  <div>
+                    <h2 class="subtitle heading-font font-bold mb-6">Completed Procedures</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      ${completedProcedures.map(progress => {
+                        const procedure = PROCEDURES.find(p => p.id === progress.procedure_id);
+                        if (!procedure) return '';
+                        const completionDate = new Date(progress.completion_date);
+                        return `
+                          <div class="surface rounded-2xl p-6 card-shadow">
+                            <div class="flex items-start justify-between mb-4">
+                              <div class="text-4xl">${procedure.icon}</div>
+                              <span class="text-2xl">✓</span>
+                            </div>
+                            <h3 class="subtitle font-bold mb-2">${procedure.name}</h3>
+                            <p class="small-text opacity-70 mb-4">Completed ${completionDate.toLocaleDateString()}</p>
+                            <div class="flex gap-2">
+                              <span class="small-text px-3 py-1 rounded-full" style="background: rgba(102, 126, 234, 0.1);">⏱️ ${progress.practice_time_minutes} min</span>
+                              <span class="small-text px-3 py-1 rounded-full" style="background: rgba(251, 146, 60, 0.1);">${'  '.repeat(progress.confidence_level)}</span>
+                            </div>
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+                ` : `
+                  <div class="surface rounded-2xl p-12 text-center card-shadow">
+                    <div class="text-8xl mb-6">📚</div>
+                    <h3 class="subtitle font-semibold mb-3">Start Your Journey</h3>
+                    <p class="body-text opacity-70 mb-6">Complete your first procedure to see your progress here</p>
+                    <button onclick="renderHomeView()" class="primary-button px-8 py-4 rounded-xl font-semibold text-white">
+                      Browse Procedures
+                    </button>
+                  </div>
+                `}
+              </div>
+            </section>
+          </main>
+        </div>
+      `;
+      
+      applyConfig(config);
+    }
+
+    function showProfile() {
+      currentView = 'profile';
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full flex">
+          <!-- Sidebar Navigation -->
+          <aside class="sidebar w-64 surface border-r flex-shrink-0 hidden md:flex flex-col" style="border-color: rgba(0,0,0,0.1);">
+            <div class="p-6 border-b" style="border-color: rgba(0,0,0,0.1);">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="text-4xl">🩺</div>
+                <div>
+                  <h2 id="app-title" class="subtitle heading-font font-bold">${config.app_title || defaultConfig.app_title}</h2>
+                </div>
+              </div>
+            </div>
+            
+            <nav class="flex-1 p-4">
+              <button onclick="renderHomeView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">🏠</span>
+                <span class="body-text">Home</span>
+              </button>
+              <button onclick="renderProgressView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">    </span>
+                <span class="body-text">Progress</span>
+              </button>
+              <button onclick="showSettings()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">⚙️</span>
+                <span class="body-text">Settings</span>
+              </button>
+            </nav>
+            
+            <div class="p-4 border-t" style="border-color: rgba(0,0,0,0.1);">
+              <button onclick="showProfile()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl primary-button text-white">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-xl" style="background: rgba(255, 255, 255, 0.2);">
+                      
+                </div>
+                <div class="flex-1 text-left">
+                  <div class="body-text font-semibold truncate">${currentUser.full_name}</div>
+                  <div class="small-text opacity-90">${currentUser.role}</div>
+                </div>
+              </button>
+            </div>
+          </aside>
+          
+          <!-- Main Content -->
+          <main class="flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="gradient-bg px-6 md:px-8 py-8">
+              <div class="max-w-4xl mx-auto">
+                <button onclick="renderHomeView()" class="surface w-12 h-12 rounded-full flex items-center justify-center mb-6 card-shadow">
+                  ←
+                </button>
+                <div class="text-center">
+                  <div class="w-32 h-32 rounded-full flex items-center justify-center text-6xl mx-auto mb-6" style="background: rgba(255, 255, 255, 0.2);">
+                    👩‍⚕️
+                  </div>
+                  <h1 class="title heading-font text-white font-bold mb-3">${currentUser.full_name}</h1>
+                  <p class="body-text text-white opacity-90">${currentUser.email}</p>
+                </div>
+              </div>
+            </header>
+            
+            <!-- Content -->
+            <section class="px-6 md:px-8 py-8">
+              <div class="max-w-2xl mx-auto space-y-6">
+                <div class="surface rounded-2xl p-6 card-shadow">
+                  <h3 class="subtitle font-semibold mb-4">Profile Information</h3>
+                  <div class="space-y-4">
+                    <div class="flex items-center justify-between py-3 border-b" style="border-color: rgba(0,0,0,0.1);">
+                      <span class="body-text opacity-70">Role</span>
+                      <span class="body-text font-medium">${currentUser.role}</span>
+                    </div>
+                    <div class="flex items-center justify-between py-3 border-b" style="border-color: rgba(0,0,0,0.1);">
+                      <span class="body-text opacity-70">Level</span>
+                      <span class="body-text font-medium">${currentUser.level}</span>
+                    </div>
+                    <div class="flex items-center justify-between py-3">
+                      <span class="body-text opacity-70">Member Since</span>
+                      <span class="body-text font-medium">${new Date(currentUser.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <button onclick="handleLogout()" class="w-full py-4 rounded-xl font-semibold text-white card-shadow" style="background: #ef4444;">
+                  <span class="body-text">Logout</span>
+                </button>
+              </div>
+            </section>
+          </main>
+        </div>
+      `;
+      
+      applyConfig(config);
+    }
+
+    function showSettings() {
+      currentView = 'settings';
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      // Get current user settings
+      const userSettings = allRecords.find(r => r.record_type === 'settings' && r.user_id === currentUser.user_id);
+      const notificationsEnabled = userSettings?.notifications_enabled !== false;
+      const progressUpdatesEnabled = userSettings?.progress_updates_enabled !== false;
+      const currentLanguage = userSettings?.language || 'English 🇺🇸';
+      
+      document.getElementById('app').innerHTML = `
+        <div class="h-full w-full flex">
+          <!-- Sidebar Navigation -->
+          <aside class="sidebar w-64 surface border-r flex-shrink-0 hidden md:flex flex-col" style="border-color: rgba(0,0,0,0.1);">
+            <div class="p-6 border-b" style="border-color: rgba(0,0,0,0.1);">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="text-4xl">🩺</div>
+                <div>
+                  <h2 id="app-title" class="subtitle heading-font font-bold">${config.app_title || defaultConfig.app_title}</h2>
+                </div>
+              </div>
+            </div>
+            
+            <nav class="flex-1 p-4">
+              <button onclick="renderHomeView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">🏠</span>
+                <span class="body-text">Home</span>
+              </button>
+              <button onclick="renderProgressView()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 opacity-60 hover:opacity-100">
+                <span class="text-xl">📊</span>
+                <span class="body-text">Progress</span>
+              </button>
+              <button onclick="showSettings()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl mb-2 primary-button text-white font-medium">
+                <span class="text-xl">⚙️</span>
+                <span class="body-text">Settings</span>
+              </button>
+            </nav>
+            
+            <div class="p-4 border-t" style="border-color: rgba(0,0,0,0.1);">
+              <button onclick="showProfile()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:opacity-80">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                  👤
+                </div>
+                <div class="flex-1 text-left">
+                  <div class="body-text font-semibold truncate">${currentUser.full_name}</div>
+                  <div class="small-text opacity-70">${currentUser.role}</div>
+                </div>
+              </button>
+            </div>
+          </aside>
+          
+          <!-- Main Content -->
+          <main class="flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="gradient-bg px-6 md:px-8 py-8">
+              <div class="max-w-4xl mx-auto">
+                <button onclick="renderHomeView()" class="surface w-12 h-12 rounded-full flex items-center justify-center mb-6 card-shadow">
+                  ←
+                </button>
+                <h1 class="title heading-font text-white font-bold mb-2">Settings</h1>
+                <p class="body-text text-white opacity-90">Customize your experience</p>
+              </div>
+            </header>
+            
+            <!-- Content -->
+            <section class="px-6 md:px-8 py-8">
+              <div class="max-w-2xl mx-auto space-y-6">
+                <!-- Profile Settings -->
+                <div class="surface rounded-2xl p-6 card-shadow">
+                  <h3 class="subtitle font-semibold mb-4">Profile Settings</h3>
+                  <form onsubmit="updateProfileSettings(event)" class="space-y-4">
+                    <div>
+                      <label for="settings-name" class="small-text font-medium block mb-2">Full Name</label>
+                      <input 
+                        type="text" 
+                        id="settings-name" 
+                        value="${currentUser.full_name}"
+                        required
+                        class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                        style="border-color: rgba(0,0,0,0.1); outline: none;"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label for="settings-email" class="small-text font-medium block mb-2">Email Address</label>
+                      <input 
+                        type="email" 
+                        id="settings-email" 
+                        value="${currentUser.email}"
+                        required
+                        class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                        style="border-color: rgba(0,0,0,0.1); outline: none;"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label for="settings-role" class="small-text font-medium block mb-2">Role</label>
+                      <select 
+                        id="settings-role" 
+                        required
+                        class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                        style="border-color: rgba(0,0,0,0.1); outline: none;"
+                      >
+                        <option value="Nursing Student" ${currentUser.role === 'Nursing Student' ? 'selected' : ''}>Nursing Student</option>
+                        <option value="RN" ${currentUser.role === 'RN' ? 'selected' : ''}>Registered Nurse</option>
+                        <option value="LPN" ${currentUser.role === 'LPN' ? 'selected' : ''}>Licensed Practical Nurse</option>
+                        <option value="Instructor" ${currentUser.role === 'Instructor' ? 'selected' : ''}>Nursing Instructor</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label for="settings-level" class="small-text font-medium block mb-2">Level</label>
+                      <select 
+                        id="settings-level" 
+                        required
+                        class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                        style="border-color: rgba(0,0,0,0.1); outline: none;"
+                      >
+                        <option value="Year 1" ${currentUser.level === 'Year 1' ? 'selected' : ''}>Year 1</option>
+                        <option value="Year 2" ${currentUser.level === 'Year 2' ? 'selected' : ''}>Year 2</option>
+                        <option value="Year 3" ${currentUser.level === 'Year 3' ? 'selected' : ''}>Year 3</option>
+                        <option value="Year 4" ${currentUser.level === 'Year 4' ? 'selected' : ''}>Year 4</option>
+                        <option value="Graduate" ${currentUser.level === 'Graduate' ? 'selected' : ''}>Graduate</option>
+                      </select>
+                    </div>
+                    
+                    <button 
+                      type="submit" 
+                      class="primary-button w-full py-3 rounded-xl font-semibold text-white"
+                      ${isLoading ? 'disabled' : ''}
+                    >
+                      ${isLoading ? '<div class="loading-spinner mx-auto"></div>' : '<span class="body-text">Save Profile Changes</span>'}
+                    </button>
+                  </form>
+                </div>
+                
+                <!-- Notifications -->
+                <div class="surface rounded-2xl p-6 card-shadow">
+                  <h3 class="subtitle font-semibold mb-4">Notifications</h3>
+                  <div class="space-y-4">
+                    <div class="flex items-center justify-between py-3">
+                      <span class="body-text">Practice Reminders</span>
+                      <button onclick="toggleNotification('practice')" class="w-12 h-6 rounded-full flex items-center px-1 transition-all" style="background: ${notificationsEnabled ? '#667eea' : 'rgba(0,0,0,0.2)'};">
+                        <div class="w-4 h-4 rounded-full bg-white transition-all" style="margin-left: ${notificationsEnabled ? 'auto' : '0'};"></div>
+                      </button>
+                    </div>
+                    <div class="flex items-center justify-between py-3">
+                      <span class="body-text">Progress Updates</span>
+                      <button onclick="toggleNotification('progress')" class="w-12 h-6 rounded-full flex items-center px-1 transition-all" style="background: ${progressUpdatesEnabled ? '#667eea' : 'rgba(0,0,0,0.2)'};">
+                        <div class="w-4 h-4 rounded-full bg-white transition-all" style="margin-left: ${progressUpdatesEnabled ? 'auto' : '0'};"></div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Language -->
+                <div class="surface rounded-2xl p-6 card-shadow">
+                  <h3 class="subtitle font-semibold mb-4">Language</h3>
+                  <select 
+                    id="language-select" 
+                    onchange="updateLanguage(this.value)"
+                    class="w-full px-4 py-3 rounded-xl border-2 body-text"
+                    style="border-color: rgba(0,0,0,0.1); outline: none;"
+                    ${isLoading ? 'disabled' : ''}
+                  >
+                    <option value="English 🇺🇸" ${currentLanguage === 'English 🇺🇸' ? 'selected' : ''}>English 🇺🇸</option>
+                    <option value="Spanish 🇪🇸" ${currentLanguage === 'Spanish 🇪🇸' ? 'selected' : ''}>Spanish 🇪🇸</option>
+                    <option value="French 🇫🇷" ${currentLanguage === 'French 🇫🇷' ? 'selected' : ''}>French 🇫🇷</option>
+                    <option value="German 🇩🇪" ${currentLanguage === 'German 🇩🇪' ? 'selected' : ''}>German 🇩🇪</option>
+                    <option value="Chinese 🇨🇳" ${currentLanguage === 'Chinese 🇨🇳' ? 'selected' : ''}>Chinese 🇨🇳</option>
+                    <option value="Japanese 🇯🇵" ${currentLanguage === 'Japanese 🇯🇵' ? 'selected' : ''}>Japanese 🇯🇵</option>
+                    <option value="Korean 🇰🇷" ${currentLanguage === 'Korean 🇰🇷' ? 'selected' : ''}>Korean 🇰🇷</option>
+                    <option value="Portuguese 🇵🇹" ${currentLanguage === 'Portuguese 🇵🇹' ? 'selected' : ''}>Portuguese 🇵🇹</option>
+                    <option value="Italian 🇮🇹" ${currentLanguage === 'Italian 🇮🇹' ? 'selected' : ''}>Italian 🇮🇹</option>
+                    <option value="Arabic 🇸🇦" ${currentLanguage === 'Arabic 🇸🇦' ? 'selected' : ''}>Arabic 🇸🇦</option>
+                  </select>
+                </div>
+                
+                <!-- Privacy & Security -->
+                <div class="surface rounded-2xl p-6 card-shadow">
+                  <h3 class="subtitle font-semibold mb-4">Privacy & Security</h3>
+                  <div class="space-y-3">
+                    <button class="w-full text-left py-3 body-text hover:opacity-70">
+                      Privacy Policy →
+                    </button>
+                    <button class="w-full text-left py-3 body-text hover:opacity-70">
+                      Terms of Service →
+                    </button>
+                    <button class="w-full text-left py-3 body-text hover:opacity-70">
+                      Data Management →
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- About -->
+                <div class="surface rounded-2xl p-6 card-shadow">
+                  <h3 class="subtitle font-semibold mb-3">About</h3>
+                  <p class="body-text opacity-70 mb-2">Nursing Skills Lab v1.0</p>
+                  <p class="small-text opacity-70">Educational platform for nursing students to practice clinical procedures in a safe, simulated environment.</p>
+                </div>
+              </div>
+            </section>
+          </main>
+        </div>
+      `;
+      
+      applyConfig(config);
+    }
+
+    async function updateProfileSettings(event) {
+      event.preventDefault();
+      if (isLoading) return;
+      
+      const name = document.getElementById('settings-name').value.trim();
+      const email = document.getElementById('settings-email').value.trim();
+      const role = document.getElementById('settings-role').value;
+      const level = document.getElementById('settings-level').value;
+      
+      if (!name || !email || !role || !level) {
+        showToast('Please fill in all fields');
+        return;
+      }
+      
+      isLoading = true;
+      showSettings();
+      
+      currentUser.full_name = name;
+      currentUser.email = email;
+      currentUser.role = role;
+      currentUser.level = level;
+      
+      const result = await window.dataSdk.update(currentUser);
+      
+      if (result.isOk) {
+        isLoading = false;
+        showToast('Profile updated successfully!');
+        showSettings();
+      } else {
+        isLoading = false;
+        showToast('Failed to update profile. Please try again.');
+        showSettings();
+      }
+    }
+
+    async function toggleNotification(type) {
+      if (isLoading) return;
+      
+      const totalRecords = allRecords.length;
+      if (totalRecords >= 999) {
+        showToast('Maximum limit of 999 records reached.');
+        return;
+      }
+      
+      isLoading = true;
+      
+      let userSettings = allRecords.find(r => r.record_type === 'settings' && r.user_id === currentUser.user_id);
+      
+      if (userSettings) {
+        if (type === 'practice') {
+          userSettings.notifications_enabled = !userSettings.notifications_enabled;
+        } else if (type === 'progress') {
+          userSettings.progress_updates_enabled = !userSettings.progress_updates_enabled;
+        }
+        
+        const result = await window.dataSdk.update(userSettings);
+        
+        if (result.isOk) {
+          isLoading = false;
+          showToast('Notification settings updated');
+        } else {
+          isLoading = false;
+          showToast('Failed to update settings');
+        }
+      } else {
+        const newSettings = {
+          record_type: 'settings',
+          user_id: currentUser.user_id,
+          notifications_enabled: type === 'practice' ? true : false,
+          progress_updates_enabled: type === 'progress' ? true : false,
+          language: 'English 🇺🇸'
+        };
+        
+        const result = await window.dataSdk.create(newSettings);
+        
+        if (result.isOk) {
+          isLoading = false;
+          showToast('Notification settings updated');
+        } else {
+          isLoading = false;
+          showToast('Failed to update settings');
+        }
+      }
+    }
+
+    async function updateLanguage(language) {
+      if (isLoading) return;
+      
+      const totalRecords = allRecords.length;
+      if (totalRecords >= 999) {
+        showToast('Maximum limit of 999 records reached.');
+        return;
+      }
+      
+      isLoading = true;
+      showSettings();
+      
+      let userSettings = allRecords.find(r => r.record_type === 'settings' && r.user_id === currentUser.user_id);
+      
+      if (userSettings) {
+        userSettings.language = language;
+        
+        const result = await window.dataSdk.update(userSettings);
+        
+        if (result.isOk) {
+          isLoading = false;
+          showToast(`Language changed to ${language}`);
+          showSettings();
+        } else {
+          isLoading = false;
+          showToast('Failed to update language');
+          showSettings();
+        }
+      } else {
+        const newSettings = {
+          record_type: 'settings',
+          user_id: currentUser.user_id,
+          notifications_enabled: true,
+          progress_updates_enabled: true,
+          language: language
+        };
+        
+        const result = await window.dataSdk.create(newSettings);
+        
+        if (result.isOk) {
+          isLoading = false;
+          showToast(`Language changed to ${language}`);
+          showSettings();
+        } else {
+          isLoading = false;
+          showToast('Failed to update language');
+          showSettings();
+        }
+      }
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      renderLoginView();
+      showToast('Logged out successfully');
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'fixed top-8 left-1/2 transform -translate-x-1/2 surface rounded-xl px-6 py-4 card-shadow fade-in z-50';
+      toast.innerHTML = `<p class="body-text text-center">${message}</p>`;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, -20px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    initializeApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9afee7178132db1f',t:'MTc2NjA2MzQ1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
