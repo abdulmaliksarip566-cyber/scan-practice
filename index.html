@@ -2087,100 +2087,52 @@
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9afee7178132db1f',t:'MTc2NjA2MzQ1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
 <!doctype html>
-<html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scan&amp;Learn</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Poppins:wght@600;700;800&amp;display=swap" rel="stylesheet">
-  <style>
-    body { box-sizing: border-box; }
-    * { font-family: 'Inter', sans-serif; }
-    .heading-font { font-family: 'Poppins', sans-serif; }
-    .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden; }
-    .surface { background: white; border-radius: 20px; }
-    .card-shadow { box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15); }
-    .primary-button { background-color: #667eea; color: white; padding: 12px; border-radius: 12px; }
-    .loading-spinner { border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top: 3px solid white; width: 24px; height: 24px; animation: spin 0.8s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  </style>
- </head>
- <body class="h-full">
-  <div id="app" class="h-full w-full overflow-auto"></div>
-
-  <script>
-    // 1. DATA AND PROCEDURES
-    const PROCEDURES = [
-      { id: 'iv-insertion', name: 'IV Insertion', category: 'Vascular', icon: '💉' },
-      { id: 'wound-care', name: 'Wound Care', category: 'General', icon: '🩹' }
-    ];
-
-    let currentUser = null;
-    let allRecords = []; // This acts as our fake database
-    let isLoading = false;
-
-    const defaultConfig = {
-      app_title: 'Scan&Learn',
-      tagline: 'Master clinical skills with confidence',
-      login_welcome: 'Welcome Back',
-      login_subtitle: 'Sign in to continue your learning'
-    };
-
-    // 2. INITIALIZATION (Fixed for GitHub)
-    function initializeApp() {
-      console.log("App initialized in Demo Mode");
-      renderLoginView();
-    }
-
-    // 3. LOGIN VIEW
-    function renderLoginView() {
-      document.getElementById('app').innerHTML = `
-        <div class="h-full w-full flex items-center justify-center gradient-bg p-6">
-          <div class="w-full max-w-md surface p-8 card-shadow text-center">
-            <h1 class="text-3xl font-bold mb-2">${defaultConfig.app_title}</h1>
-            <p class="mb-6 text-gray-600">${defaultConfig.tagline}</p>
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-              <input type="email" id="email" placeholder="Email" class="w-full p-3 border rounded-lg" required>
-              <input type="password" id="password" placeholder="Password" class="w-full p-3 border rounded-lg" required>
-              <button type="submit" class="primary-button w-full font-bold">Sign In</button>
-            </form>
-            <p class="mt-4 text-sm text-gray-500">Demo: Use any email and password to enter.</p>
-          </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan&Learn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .surface { background: white; border-radius: 1rem; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="gradient-bg flex items-center justify-center p-6">
+    <div id="app" class="w-full max-w-md">
         </div>
-      `;
-    }
 
-    // 4. LOGIN LOGIC
-    async function handleLogin(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      currentUser = { email: email, full_name: "Nurse Student", user_id: "123" };
-      renderHomeView();
-    }
+    <script>
+        const app = document.getElementById('app');
 
-    // 5. HOME VIEW
-    function renderHomeView() {
-      document.getElementById('app').innerHTML = `
-        <div class="p-6">
-          <h1 class="text-2xl font-bold mb-4">Procedure Library</h1>
-          <div class="grid gap-4">
-            ${PROCEDURES.map(p => `
-              <div class="surface p-4 card-shadow flex items-center gap-4">
-                <span class="text-4xl">${p.icon}</span>
-                <div>
-                  <h3 class="font-bold">${p.name}</h3>
-                  <p class="text-sm text-gray-500">${p.category}</p>
+        function renderLogin() {
+            app.innerHTML = `
+                <div class="surface text-center">
+                    <h1 class="text-3xl font-bold mb-4">Scan&Learn</h1>
+                    <p class="text-gray-600 mb-6">Ready to practice?</p>
+                    <button onclick="renderHome()" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold">
+                        Enter App
+                    </button>
                 </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-    }
+            `;
+        }
 
-    // Start the app when the page loads
-    window.onload = initializeApp;
-  </script>
- </body>
+        function renderHome() {
+            app.innerHTML = `
+                <div class="surface">
+                    <h2 class="text-2xl font-bold mb-4">Procedures</h2>
+                    <ul class="space-y-3">
+                        <li class="p-3 bg-gray-50 rounded border">💉 IV Insertion</li>
+                        <li class="p-3 bg-gray-50 rounded border">🩹 Wound Care</li>
+                        <li class="p-3 bg-gray-50 rounded border">👃 NG Tube</li>
+                    </ul>
+                    <button onclick="renderLogin()" class="mt-6 text-indigo-600 text-sm w-full">Logout</button>
+                </div>
+            `;
+        }
+
+        // Run this immediately
+        renderLogin();
+    </script>
+</body>
 </html>
